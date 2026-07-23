@@ -64,12 +64,31 @@ async function montBelvieu() {
   } catch (e) { console.error('MB EIA:', e.message); return null; }
 }
 
+async function brent() {
+  const key = process.env.EIA_API_KEY;
+  if (!key) return null;                                            // contexto macro; Colombia exporta crudo → Brent↑ tiende a TRM↓
+  const url = `https://api.eia.gov/v2/petroleum/pri/spt/data/?api_key=${key}` +
+    `&frequency=daily&data[0]=value&facets[series][]=RBRTE` +
+    `&sort[0][column]=period&sort[0][direction]=desc&length=1`;
+  try {
+    const r = await fetch(url, { headers: { 'User-Agent': UA } });
+    if (!r.ok) throw new Error('EIA HTTP ' + r.status);
+    const j = await r.json();
+    const row = j?.response?.data?.[0];
+    const v = num(parseFloat(row?.value));
+    if (v == null) return null;
+    return { usd_bbl: +v.toFixed(2), date: row.period, fuente: 'EIA (Europe Brent Spot, RBRTE)' };
+  } catch (e) { console.error('Brent EIA:', e.message); return null; }
+}
+
 (async () => {
   const out = { updated: new Date().toISOString() };
   try { out.eco = await ecopetrol(); console.log('Ecopetrol OK:', out.eco.period, 'interior', out.eco.interior, 'reficar', out.eco.reficar); }
   catch (e) { console.error('Ecopetrol FALLÓ:', e.message); out.ecoError = e.message; }
   out.mb = await montBelvieu();
   console.log('MB:', out.mb ? `${out.mb.propano}/${out.mb.butano} @ ${out.mb.date}` : '(sin llave EIA — omitido)');
+  out.brent = await brent();
+  console.log('Brent:', out.brent ? `${out.brent.usd_bbl} @ ${out.brent.date}` : '(sin llave EIA — omitido)');
 
   const dest = path.join(__dirname, 'glp-data.json');
   fs.writeFileSync(dest, JSON.stringify(out, null, 2) + '\n');
