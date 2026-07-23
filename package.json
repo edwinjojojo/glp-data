@@ -1,0 +1,9 @@
+{
+  "name": "glp-data",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Datos oficiales del GLP en Colombia (Ecopetrol + EIA), refrescados a diario. Consumidos por automatizaciones-digitales.web.app/glp",
+  "type": "commonjs",
+  "scripts": { "update": "node update-glp-data.js" },
+  "dependencies": { "xlsx": "^0.18.5" }
+}
