@@ -1,10 +1,29 @@
 {
-  "updated": "2026-08-31T17:59:26.802Z",
+  "updated": "2026-09-01T10:00:18.191Z",
   "eco": {
     "period": "JUL 15- AGO 14 DE 2026",
     "interior": 961.5011979314163,
     "reficar": 1408.5509216866328,
     "importado": null,
+    "importadoNota": "Ecopetrol ya no publica la columna \"Precio Importado\" (la última fue DIC 15 2018- ENE 14 2019, 2111.22 $/kg). El nivel vivo del importado se estima por paridad de importación (Mont Belvieu × TRM), no por esta hoja.",
+    "importadoHist": {
+      "periodo": "DIC 15 2018- ENE 14 2019",
+      "kg": 2111.22
+    },
+    "capachos": {
+      "kg": 2259.34,
+      "gl": 4336.55,
+      "periodo": "1 AL 31 DE JULIO DEL 2026",
+      "regulado": false
+    },
+    "transporteImportado": {
+      "kg": 125.12,
+      "gl": 240,
+      "destino": "Refinería de Barrancabermeja"
+    },
+    "sinVentas": [
+      "apiay"
+    ],
     "porFuente": {
       "barranca": 961.5011979314163,
       "reficar": 1408.5509216866328,
