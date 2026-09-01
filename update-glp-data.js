@@ -116,6 +116,78 @@ async function ecopetrol() {
   };
 }
 
+/* ===== PARTICIPACIÓN HISTÓRICA EN EL MERCADO NACIONAL (SUI, formato B1) =====
+ * dda6-rcne = "Origen del producto para consumo nacional de GLP". Trae el NIT de quien produjo
+ * o importó cada kilo, así que la participación se MIDE, no se estima.
+ *
+ * Dos trampas de este dataset:
+ *  - Ecopetrol aparece con dos escrituras del NIT (con y sin dígito de verificación).
+ *  - 9001125157 es REFICAR, filial 100% de Ecopetrol. Sin consolidarla, el dominio de partida
+ *    sale subestimado en más de 20 puntos. Se reportan las dos lecturas y que decida quien lee.
+ *  - `anio` y `mes` son TEXTO en Socrata: nada de comparaciones numéricas en el $where.
+ * Los últimos meses llegan incompletos (el reporte va entrando), así que se recortan solos. */
+const SUI_B1 = 'https://www.datos.gov.co/resource/dda6-rcne.json?' +
+  '$select=anio,mes,nit_productor_y_o_importador as nit,nombre_fuente_produccion as fuente,sum(cantidad_kg) as kg' +
+  '&$group=anio,mes,nit_productor_y_o_importador,nombre_fuente_produccion&$limit=20000';
+const NIT_ECOPETROL = ['8999990681', '899999068'];   // matriz, con y sin dígito de verificación
+const NIT_REFICAR   = ['9001125157'];                // Refinería de Cartagena, filial 100%
+
+async function participacion() {
+  const r = await fetch(SUI_B1, { headers: { 'User-Agent': UA } });
+  if (!r.ok) throw new Error('SUI B1 HTTP ' + r.status);
+  const filas = await r.json();
+  if (!Array.isArray(filas) || !filas.length) throw new Error('SUI B1: respuesta vacía');
+
+  /* Mes completo = el último que no se desploma contra la mediana de los 12 anteriores.
+     Evita clavar un corte fijo que se vuelve mentira el mes entrante. */
+  const porMes = {};
+  filas.forEach(f => { const k = f.anio + '-' + String(f.mes).padStart(2, '0'); porMes[k] = (porMes[k] || 0) + Number(f.kg); });
+  const claves = Object.keys(porMes).sort();
+  const ult12 = claves.slice(-12).map(k => porMes[k]).sort((a, b) => a - b);
+  const mediana = ult12[Math.floor(ult12.length / 2)] || 0;
+  let i = claves.length - 1;
+  while (i > 0 && porMes[claves[i]] < mediana * 0.6) i--;
+  const corte = claves[i];
+
+  const esImp = f => /IMPORTA/i.test(f || '');
+  const Y = {};
+  filas.forEach(f => {
+    const k = f.anio + '-' + String(f.mes).padStart(2, '0');
+    if (k > corte) return;
+    const a = f.anio, kg = Number(f.kg);
+    const y = Y[a] = Y[a] || { anio: +a, kt: 0, ecoNac: 0, refNac: 0, grpImp: 0, terNac: 0, terImp: 0 };
+    const eco = NIT_ECOPETROL.includes(f.nit), ref = NIT_REFICAR.includes(f.nit);
+    if ((eco || ref) && esImp(f.fuente)) y.grpImp += kg;   // el propio grupo también importa
+    else if (eco) y.ecoNac += kg;
+    else if (ref) y.refNac += kg;
+    else if (esImp(f.fuente)) y.terImp += kg;
+    else y.terNac += kg;
+    y.kt += kg;
+  });
+
+  const pc = (v, t) => t ? +(100 * v / t).toFixed(1) : null;
+  const serie = Object.values(Y).sort((a, b) => a.anio - b.anio).map(y => ({
+    anio: y.anio,
+    kt: +(y.kt / 1e6).toFixed(1),
+    grupo:  pc(y.ecoNac + y.refNac + y.grpImp, y.kt),   // Grupo Ecopetrol = matriz + Reficar
+    matriz: pc(y.ecoNac + y.grpImp, y.kt),              // solo Ecopetrol S.A.
+    ecoNac: pc(y.ecoNac, y.kt),
+    refNac: pc(y.refNac, y.kt),
+    grpImp: pc(y.grpImp, y.kt),
+    terNac: pc(y.terNac, y.kt),
+    terImp: pc(y.terImp, y.kt),
+  }));
+  const anioCorte = +corte.slice(0, 4), mesCorte = +corte.slice(5);
+  return {
+    corte, serie,
+    parcial: mesCorte < 12 ? anioCorte : null,     // el último año va incompleto: hay que decirlo
+    mesesParcial: mesCorte < 12 ? mesCorte : null,
+    fuente: 'SSPD · SUI formato B1 (Origen del producto para consumo nacional), datos.gov.co dda6-rcne',
+    url: 'https://www.datos.gov.co/d/dda6-rcne',
+    nota: 'Reficar (NIT 900112515) se consolida dentro del Grupo Ecopetrol por ser filial 100%. "matriz" excluye Reficar.',
+  };
+}
+
 async function eia(serie, etiqueta) {
   const key = process.env.EIA_API_KEY;
   if (!key) return null;                                            // sin llave → se omite (no va al frontend)
@@ -153,6 +225,13 @@ async function brent() {
     console.log('  Importado:', out.eco.importado ?? '(columna descontinuada; último ' + (out.eco.importadoHist ? out.eco.importadoHist.kg + ' $/kg en ' + out.eco.importadoHist.periodo : 'n/d') + ')');
     if (out.eco.sinVentas.length) console.log('  Sin ventas este período:', out.eco.sinVentas.join(', '));
   } catch (e) { console.error('Ecopetrol FALLÓ:', e.message); out.ecoError = e.message; }
+  try {
+    out.part = await participacion();
+    const s = out.part.serie;
+    console.log('Participación OK: corte', out.part.corte, '·', s.length, 'años ·',
+      'Grupo Ecopetrol ' + s[0].anio + ' ' + s[0].grupo + '% → ' + s[s.length - 1].anio + ' ' + s[s.length - 1].grupo + '%',
+      '| terceros importadores ' + s[0].terImp + '% → ' + s[s.length - 1].terImp + '%');
+  } catch (e) { console.error('Participación FALLÓ:', e.message); out.partError = e.message; }
   out.mb = await montBelvieu();
   console.log('MB:', out.mb ? `${out.mb.propano}/${out.mb.butano} @ ${out.mb.date}` : '(sin llave EIA — omitido)');
   out.brent = await brent();
