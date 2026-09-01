@@ -22,6 +22,8 @@ const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AutomatizacionesDigitales-
 
 const num = v => (typeof v === 'number' && isFinite(v)) ? v : null;
 const r2  = v => (v == null ? null : +v.toFixed(2));
+/* 2111.22 -> "2.111,22": la nota se lee en la pagina, en formato colombiano */
+const co  = n => { const [e, d] = n.toFixed(2).split('.'); return e.replace(/\B(?=(\d{3})+$)/g, '.') + ',' + d; };
 /* "1.408,55" / "125,12" → 1408.55 / 125.12 (las notas al pie vienen en formato colombiano) */
 const coma = s => { const v = parseFloat(String(s).trim().replace(/\./g, '').replace(',', '.')); return isFinite(v) ? v : null; };
 const filas = hoja => XLSX.utils.sheet_to_json(hoja, { header: 1, defval: '' });
@@ -98,7 +100,7 @@ async function ecopetrol() {
   const hist = importadoHistorico(wb);
   const nota = by.importado == null
     ? 'Ecopetrol ya no publica la columna "Precio Importado" (la última fue ' +
-      (hist ? hist.periodo + ', ' + hist.kg + ' $/kg' : 'anterior a 2019') +
+      (hist ? hist.periodo + ', ' + co(hist.kg) + ' $/kg' : 'anterior a 2019') +
       '). El nivel vivo del importado se estima por paridad de importación (Mont Belvieu × TRM), no por esta hoja.'
     : null;
   return {
