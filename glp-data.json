@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-01T10:17:36.378Z",
+  "updated": "2026-09-01T10:48:20.523Z",
   "eco": {
     "period": "JUL 15- AGO 14 DE 2026",
     "interior": 961.5011979314163,
@@ -31,6 +31,115 @@
       "cusiana": 961.5011979314163,
       "cupiagua": 961.5011979314163
     }
+  },
+  "part": {
+    "corte": "2025-06",
+    "serie": [
+      {
+        "anio": 2017,
+        "kt": 672.3,
+        "grupo": 90.6,
+        "matriz": 68.9,
+        "ecoNac": 65.9,
+        "refNac": 21.7,
+        "grpImp": 3,
+        "terNac": 8.4,
+        "terImp": 1
+      },
+      {
+        "anio": 2018,
+        "kt": 638.8,
+        "grupo": 83.6,
+        "matriz": 74.9,
+        "ecoNac": 68.6,
+        "refNac": 8.7,
+        "grpImp": 6.3,
+        "terNac": 10.4,
+        "terImp": 6
+      },
+      {
+        "anio": 2019,
+        "kt": 606,
+        "grupo": 80.5,
+        "matriz": 69.2,
+        "ecoNac": 64.1,
+        "refNac": 11.2,
+        "grpImp": 5.1,
+        "terNac": 11.4,
+        "terImp": 8.2
+      },
+      {
+        "anio": 2020,
+        "kt": 645.5,
+        "grupo": 92.1,
+        "matriz": 83.2,
+        "ecoNac": 83.2,
+        "refNac": 8.9,
+        "grpImp": 0,
+        "terNac": 6.5,
+        "terImp": 1.4
+      },
+      {
+        "anio": 2021,
+        "kt": 695.9,
+        "grupo": 87.9,
+        "matriz": 80.7,
+        "ecoNac": 80.7,
+        "refNac": 7.2,
+        "grpImp": 0,
+        "terNac": 10.2,
+        "terImp": 1.9
+      },
+      {
+        "anio": 2022,
+        "kt": 758,
+        "grupo": 87.3,
+        "matriz": 79.5,
+        "ecoNac": 70.8,
+        "refNac": 7.7,
+        "grpImp": 8.8,
+        "terNac": 10.3,
+        "terImp": 2.5
+      },
+      {
+        "anio": 2023,
+        "kt": 727.2,
+        "grupo": 84.1,
+        "matriz": 77.5,
+        "ecoNac": 70.9,
+        "refNac": 6.6,
+        "grpImp": 6.6,
+        "terNac": 9.7,
+        "terImp": 6.2
+      },
+      {
+        "anio": 2024,
+        "kt": 759.4,
+        "grupo": 69.6,
+        "matriz": 63.7,
+        "ecoNac": 57.6,
+        "refNac": 5.9,
+        "grpImp": 6.1,
+        "terNac": 8.5,
+        "terImp": 21.9
+      },
+      {
+        "anio": 2025,
+        "kt": 377.5,
+        "grupo": 58.3,
+        "matriz": 52.9,
+        "ecoNac": 50.3,
+        "refNac": 5.4,
+        "grpImp": 2.6,
+        "terNac": 9.2,
+        "terImp": 32.5
+      }
+    ],
+    "parcial": 2025,
+    "mesesParcial": 6,
+    "fuente": "SSPD · SUI formato B1 (Origen del producto para consumo nacional), datos.gov.co dda6-rcne",
+    "url": "https://www.datos.gov.co/d/dda6-rcne",
+    "nota": "Reficar (NIT 900112515) se consolida dentro del Grupo Ecopetrol por ser filial 100%. \"matriz\" excluye Reficar."
   },
   "mb": {
     "propano": 0.685,
