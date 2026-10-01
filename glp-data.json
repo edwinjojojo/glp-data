@@ -1,6 +1,37 @@
 {
-  "updated": "2026-09-30T16:48:34.187Z",
-  "ecoError": "fetch failed",
+  "updated": "2026-10-01T17:21:21.157Z",
+  "eco": {
+    "period": "JUL 15- AGO 14 DE 2026",
+    "interior": 961.5011979314163,
+    "reficar": 1408.5509216866328,
+    "importado": null,
+    "importadoNota": "Ecopetrol ya no publica la columna \"Precio Importado\" (la última fue DIC 15 2018- ENE 14 2019, 2.111,22 $/kg). El nivel vivo del importado se estima por paridad de importación (Mont Belvieu × TRM), no por esta hoja.",
+    "importadoHist": {
+      "periodo": "DIC 15 2018- ENE 14 2019",
+      "kg": 2111.22
+    },
+    "capachos": {
+      "kg": 2259.34,
+      "gl": 4336.55,
+      "periodo": "1 AL 31 DE JULIO DEL 2026",
+      "regulado": false
+    },
+    "transporteImportado": {
+      "kg": 125.12,
+      "gl": 240,
+      "destino": "Refinería de Barrancabermeja"
+    },
+    "sinVentas": [
+      "apiay"
+    ],
+    "porFuente": {
+      "barranca": 961.5011979314163,
+      "reficar": 1408.5509216866328,
+      "dina": 961.5011979314163,
+      "cusiana": 961.5011979314163,
+      "cupiagua": 961.5011979314163
+    }
+  },
   "part": {
     "corte": "2025-06",
     "serie": [
@@ -111,14 +142,14 @@
     "nota": "Reficar (NIT 900112515) se consolida dentro del Grupo Ecopetrol por ser filial 100%. \"matriz\" excluye Reficar."
   },
   "mb": {
-    "propano": 0.864,
-    "butano": 1.02,
-    "date": "2026-09-22",
+    "propano": 0.894,
+    "butano": 1.055,
+    "date": "2026-09-29",
     "fuente": "EIA (butano ≈ propano×1,18)"
   },
   "brent": {
-    "usd_bbl": 114.89,
-    "date": "2026-09-22",
+    "usd_bbl": 113.96,
+    "date": "2026-09-29",
     "fuente": "EIA (Europe Brent Spot, RBRTE)"
   }
 }
