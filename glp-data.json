@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-21T15:55:49.609Z",
+  "updated": "2026-10-22T15:51:53.750Z",
   "eco": {
     "period": "JUL 15- AGO 14 DE 2026",
     "interior": 961.5011979314163,
@@ -142,14 +142,14 @@
     "nota": "Reficar (NIT 900112515) se consolida dentro del Grupo Ecopetrol por ser filial 100%. \"matriz\" excluye Reficar."
   },
   "mb": {
-    "propano": 1.07,
-    "butano": 1.263,
-    "date": "2026-10-14",
+    "propano": 1.133,
+    "butano": 1.337,
+    "date": "2026-10-20",
     "fuente": "EIA (butano ≈ propano×1,18)"
   },
   "brent": {
-    "usd_bbl": 126.55,
-    "date": "2026-10-14",
+    "usd_bbl": 115.22,
+    "date": "2026-10-20",
     "fuente": "EIA (Europe Brent Spot, RBRTE)"
   }
 }
